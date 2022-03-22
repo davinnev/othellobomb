@@ -1,8 +1,8 @@
 # Othellobomb
 ### Play Othello with a twist!
 
-Group No.:55  
-Group members:ISTIMUR Kevin Indrayana (3035918701) | VALERIA Davinne (3035898913)  
+Group No.: 55  
+Group members: ISTIMUR Kevin Indrayana (3035918701) | VALERIA Davinne (3035898913)  
 Topic: Othello Bomb  
 Link: https://github.com/davinnev/othellobomb  
 
