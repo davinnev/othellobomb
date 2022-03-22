@@ -27,15 +27,15 @@ Rules:
 7. At the end of the game, the program will count the total number of black and white disks. The player with more disks wins.
 
 Features:
-1. Generation of random game sets or events: 
+1. Generation of random game sets or events:   
 	We use stdlib.h library to use rand() function to generate random positions of the bombs which are 	distinct in every game (by using srand(time(NULL), time function from time.h library).
-2. Data structures for storing game status: 
+2. Data structures for storing game status:  
 	We use 2D array for the board that will store the disk (denoted by either ◦ (unicode number: &#9702) or • (unicode number: &#8226)).
-3. Dynamic memory management: 
+3. Dynamic memory management:   
 	Each move will dynamically change the 2D array members since every move will flip the disk into the current player’s color.
-4. File input/output (e.g., for loading/saving game status):
+4. File input/output (e.g., for loading/saving game status):  
 	- input: player move (row column).
 	- output: print the updated board.
-5. Program codes in multiple files: 
+5. Program codes in multiple files:   
 	- The main function which consists of the game flow from the beginning to the end will be separated into one separate file.
 	- The mechanism and effect of every type of bomb will be stored in different files.
