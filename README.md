@@ -1,4 +1,4 @@
-# Othellobomb
+# Othello Bomb
 ### Play Othello with a twist!
 
 Group No.: 55  
