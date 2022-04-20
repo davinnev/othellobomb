@@ -5,6 +5,70 @@ using namespace std;
 #define BLACK "\xe2\x97\x8f"
 #define WHITE "\xe2\x97\x8c"
 
+void InputBoard(char ** b, int s);
+void PrintBoard(char ** b, int s);
+void ModifyBoard(char ** b, string input, int turn);
+void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col); // to determine from which column until which column that the disk should be flipped
+void flip_horizontal(char **b, int from_col, int until_col, int turn, string input); // to flip in horizontal manner, given from which column until which column to be flipped
+void flipable_vertical(char ** b, string input, int s, int turn, int * from_row, int * until_row); // to determine from which row until which row that the disk should be flipped
+void flip_vertical(char **b, int from_row, int until_row, int turn, string input); // to flip in vertical manner, given from which row until which row to be flipped
+void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col); // to determine from which column & row until which column & row that the disk should be flipped
+void flip_diagonal1(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (negative gradient)
+void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col); // to determine from which column & row until which column & row that the disk should be flipped
+void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (positive gradient)
+void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col); // wraps up all above flipable and flip functions
+
+int main()
+{
+     int bsize;
+     cout << "Input board size between 8 to 14 (N x N): ";
+     cin >> bsize;
+
+     char ** board = new char * [bsize];
+     for (int i = 0; i < bsize; i++){
+          board[i] = new char [bsize];}
+
+     InputBoard(board, bsize);
+     PrintBoard(board, bsize);
+
+     string userinput = "";
+     int turn = 0;
+
+     int row, column;
+
+     while (userinput != "quit")
+     {
+          row = 0;
+          column = 0;
+
+          int from_col, until_col, from_row, until_row;
+
+          if (turn == 0)
+          {
+               cout << "Player white turn, input block to fill: ";
+               cin >> userinput;
+               turn = 1;
+               ModifyBoard(board, userinput, turn);
+               FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
+               PrintBoard(board, bsize);
+               continue;
+          }
+
+          else if (turn == 1)
+          {
+               cout << "Player black turn, input block to fill: ";
+               cin >> userinput;
+               turn = 0;
+               ModifyBoard(board, userinput, turn);
+               FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
+               PrintBoard(board, bsize);
+               continue;
+          }
+     }
+
+     return 0;
+}
+
 void InputBoard(char ** b, int s)
 {
     for (int i = 0; i < s; i++)
@@ -94,9 +158,9 @@ void ModifyBoard(char ** b, string input, int turn)
           b[row][column] = '1';
 }
 
-void flipable_horizontal(char ** b, string input, int s, int turn, int * from, int * until){
+void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col){
      int row = (int) input[0] - 65;
-     int origin = 0;//index of column when disk placed
+     int origin = 0;
      if (input.length() == 3)
      {
           origin += 10;
@@ -112,33 +176,33 @@ void flipable_horizontal(char ** b, string input, int s, int turn, int * from, i
      //from
      for (int i = origin-1; i >= 0; i--){
           if (b[row][i] != '0' && b[row][i] != '1'){
-               *from = origin;
+               *from_col = origin;
                break;
           }
           if (b[row][i] == my_turn){
-               *from = i;
+               *from_col = i;
                break;
           } 
      }
      if (origin == 0){ //case for index = 0
-          *from = 0;
+          *from_col = 0;
      }
      //until
      for (int j = origin+1; j <= s; j++){
           if (b[row][j] != '0' && b[row][j] != '1'){
-               *until = origin;
+               *until_col = origin;
                break;
           }
           if (b[row][j] == my_turn){
-               *until = j;
+               *until_col = j;
                break;
           } 
      }
 }
 
-void flip_horizontal(char **b, int from, int until, int turn, string input){
+void flip_horizontal(char **b, int from_col, int until_col, int turn, string input){
      int row = (int) input[0] - 65;
-     for (int i = from+1; i < until; i++){
+     for (int i = from_col + 1; i < until_col; i++){
           if (turn == 1){
                b[row][i] = '1';
           }
@@ -148,7 +212,7 @@ void flip_horizontal(char **b, int from, int until, int turn, string input){
      }
 }
 
-void flipable_vertical(char ** b, string input, int s, int turn, int * from, int * until){
+void flipable_vertical(char ** b, string input, int s, int turn, int * from_row, int * until_row){
      int column = 0;
      if (input.length() == 3)
      {
@@ -159,37 +223,37 @@ void flipable_vertical(char ** b, string input, int s, int turn, int * from, int
      {
           column += (int) input[1] - 49;
      }
-     int origin = (int) input[0] - 65; //index of row when disk placed
+     int origin = (int) input[0] - 65;
      char my_turn = turn + 48;
 
      //from
      for (int i = origin-1; i >= 0; i--){
           if (b[i][column] != '0' && b[i][column] != '1'){
-               *from = origin;
+               *from_row = origin;
                break;
           }
           if (b[i][column] == my_turn){
-               *from = i;
+               *from_row = i;
                break;
           } 
      }
      if (origin == 0){ //case for index = 0
-          *from = 0;
+          *from_row = 0;
      }
      //until
      for (int j = origin+1; j <= s; j++){
           if (b[j][column] != '0' && b[j][column] != '1'){
-               *until = origin;
+               *until_row = origin;
                break;
           }
           if (b[j][column] == my_turn){
-               *until = j;
+               *until_row = j;
                break;
           } 
      }
 }
 
-void flip_vertical(char **b, int from, int until, int turn, string input){
+void flip_vertical(char **b, int from_row, int until_row, int turn, string input){
      int column = 0;
      if (input.length() == 3)
      {
@@ -200,7 +264,7 @@ void flip_vertical(char **b, int from, int until, int turn, string input){
      {
           column += (int) input[1] - 49;
      }
-     for (int i = from+1; i < until; i++){
+     for (int i = from_row + 1; i < until_row; i++){
           if (turn == 1){
                b[i][column] = '1';
           }
@@ -212,7 +276,7 @@ void flip_vertical(char **b, int from, int until, int turn, string input){
 
 void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col){
      int origin_row = (int) input[0] - 65;
-     int origin_column = 0;//index of column when disk placed
+     int origin_column = 0;
      if (input.length() == 3){
           origin_column += 10;
           origin_column += ((int) input[2]-49);
@@ -272,7 +336,7 @@ void flip_diagonal1(char **b, int from_row, int until_row, int from_col, int unt
 
 void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col){
      int origin_row = (int) input[0] - 65;
-     int origin_column = 0;//index of column when disk placed
+     int origin_column = 0;
      if (input.length() == 3){
           origin_column += 10;
           origin_column += ((int) input[2]-49);
@@ -330,65 +394,13 @@ void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int unt
      }
 }
 
-void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col, int from, int until){
-     flipable_horizontal(board, userinput, bsize, turn, &from, &until);
-     flip_horizontal(board, from, until, turn, userinput);
-     flipable_vertical(board, userinput, bsize, turn, &from, &until);
-     flip_vertical(board, from, until, turn, userinput);
+void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col){
+     flipable_horizontal(board, userinput, bsize, turn, &from_col, &until_col);
+     flip_horizontal(board, from_col, until_col, turn, userinput);
+     flipable_vertical(board, userinput, bsize, turn, &from_row, &until_row);
+     flip_vertical(board, from_row, until_row, turn, userinput);
      flipable_diagonal1(board, userinput, bsize, turn, &from_row, &until_row, &from_col, &until_col);
      flip_diagonal1(board, from_row, until_row, from_col, until_col, turn, userinput);
      flipable_diagonal2(board, userinput, bsize, turn, &from_row, &until_row, &from_col, &until_col);
      flip_diagonal2(board, from_row, until_row, from_col, until_col, turn, userinput);
-}
-
-int main()
-{
-     int bsize;
-     cout << "Input board size between 8 to 14 (N x N): ";
-     cin >> bsize;
-
-     char ** board = new char * [bsize];
-     for (int i = 0; i < bsize; i++){
-          board[i] = new char [bsize];}
-
-     InputBoard(board, bsize);
-     PrintBoard(board, bsize);
-
-     string userinput = "";
-     int turn = 0;
-
-     int row, column;
-
-     while (userinput != "quit")
-     {
-          row = 0;
-          column = 0;
-
-          int from, until;
-          int from_col, until_col, from_row, until_row;
-
-          if (turn == 0)
-          {
-               cout << "Player white turn, input block to fill: ";
-               cin >> userinput;
-               turn = 1;
-               ModifyBoard(board, userinput, turn);
-               FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col, from, until);
-               PrintBoard(board, bsize);
-               continue;
-          }
-
-          else if (turn == 1)
-          {
-               cout << "Player black turn, input block to fill: ";
-               cin >> userinput;
-               turn = 0;
-               ModifyBoard(board, userinput, turn);
-               FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col, from, until);
-               PrintBoard(board, bsize);
-               continue;
-          }
-     }
-
-     return 0;
 }
