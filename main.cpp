@@ -25,6 +25,7 @@ void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row
 void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (positive gradient)
 void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col); // wraps up all above flipable and flip functions
 void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs);
+void CountScore(char ** b, int s);
 
 int main()
 {
@@ -63,6 +64,9 @@ int main()
                {
                     cout << "Player white turn, input block to fill: ";
                     GetUserInput(userinput, board, bsize);
+                    if (userinput == "quit"){
+                         break;
+                    }
                     ModifyBoard(board, userinput, turn, bsize);
                     FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
                     PrintBoard(board, bsize);
@@ -75,6 +79,9 @@ int main()
                {
                     cout << "Player black turn, input block to fill: ";
                     GetUserInput(userinput, board, bsize);
+                    if (userinput == "quit"){
+                         break;
+                    }
                     ModifyBoard(board, userinput, turn, bsize);
                     FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col); 
                     PrintBoard(board, bsize);
@@ -83,6 +90,7 @@ int main()
                     continue;
                }
           }
+          CountScore(board, bsize);
      }
      else{
           cout << "Invalid input, please restart" << endl;
@@ -539,4 +547,31 @@ void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_ro
      flip_diagonal1(board, from_row, until_row, from_col, until_col, turn, userinput);
      flipable_diagonal2(board, userinput, bsize, turn, &from_row, &until_row, &from_col, &until_col);
      flip_diagonal2(board, from_row, until_row, from_col, until_col, turn, userinput);
+}
+
+void CountScore(char ** b, int s){
+     int white_counter = 0, black_counter = 0;
+
+     for (int i = 0; i < s; i++){
+          for (int j = 0; j < s; j++){
+               if (b[i][j] == '0'){
+                    white_counter += 1;
+               }
+               else if (b[i][j] == '1'){
+                    black_counter += 1;
+               }
+          }
+     }
+     cout << "White Player Score: " << white_counter << endl;
+     cout << "Black Player Score: " << black_counter << endl;
+     
+     if (white_counter > black_counter){
+          cout << "White Player Wins !!" << WHITE << endl;
+     }
+     else if (white_counter < black_counter){
+          cout << "Black Player Wins !!" << BLACK << endl;
+     }
+     else{
+          cout << "It's a tie !!" << endl;
+     }
 }
