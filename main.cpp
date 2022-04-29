@@ -283,10 +283,15 @@ void Bomb3(char ** b, string input, int &turn)
     if (b[row][column] == '4')
     {
         if (turn == 1)
+        {
             turn = 0;
+            b[row][column] = '0';
+        }
         else if (turn == 0)
+        {
             turn = 1;
-        b[row][column] = ' ';
+            b[row][column] = '1';
+        }
     }
 }
 
