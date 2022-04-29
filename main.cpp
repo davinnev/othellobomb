@@ -209,7 +209,11 @@ void PrintBoard(char ** b, int s)
                     cout << "| " << BLACK << " ";
                     continue;
                }
-
+               else if (b[i][k] == '2' || b[i][k] == '3' || b[i][k] == '4')
+               {
+                    cout << "| " << ' ' << " ";
+                    continue;
+               }
                cout << "| " << b[i][k] << " ";
           }
           cout << "|" << endl;
