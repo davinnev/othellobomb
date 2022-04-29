@@ -10,7 +10,7 @@ using namespace std;
 void InputBoard(char ** b, int s);
 void PrintBoard(char ** b, int s);
 void GetUserInput(string &input, char **b, int s); // get user input complete with error handling
-void ModifyBoard(char ** b, string input, int &turn, int s);
+void ModifyBoard(char ** b, string input, int turn, int s);
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col); // to determine from which column until which column that the disk should be flipped
 void flip_horizontal(char **b, int from_col, int until_col, int turn, string input); // to flip in horizontal manner, given from which column until which column to be flipped
 void flipable_vertical(char ** b, string input, int s, int turn, int * from_row, int * until_row); // to determine from which row until which row that the disk should be flipped
@@ -181,7 +181,7 @@ void PrintBoard(char ** b, int s)
      cout << endl;
 }
 
-void ModifyBoard(char ** b, string input, int &turn, int s)
+void ModifyBoard(char ** b, string input, int turn, int s)
 {
      int row = 0, column = 0;
 
