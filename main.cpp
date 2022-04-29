@@ -11,6 +11,7 @@ void InputBoard(char ** b, int s);
 void PrintBoard(char ** b, int s);
 void GetUserInput(string &input, char **b, int s); // get user input complete with error handling
 void ModifyBoard(char ** b, string input, int turn, int s);
+void Bomb3(char ** b, string input, int &turn); // Bomb 3 lets the current player go on another turn
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col); // to determine from which column until which column that the disk should be flipped
 void flip_horizontal(char **b, int from_col, int until_col, int turn, string input); // to flip in horizontal manner, given from which column until which column to be flipped
 void flipable_vertical(char ** b, string input, int s, int turn, int * from_row, int * until_row); // to determine from which row until which row that the disk should be flipped
@@ -221,6 +222,34 @@ void ModifyBoard(char ** b, string input, int turn, int s)
              turn = 0;
          b[row][column] = ' ';
      }
+}
+
+void Bomb3(char ** b, string input, int &turn)
+{
+    int row = 0, column = 0;
+
+    if (input.length() == 3)
+    {
+        row = (int) input[0] - 65;
+        column += 10;
+        column += ((int) input[2]-48);
+    }
+    else if (input.length() == 2)
+    {
+        row = (int) input[0] - 65;
+        column += (int) input[1] - 48;
+    }
+
+    column--;
+
+    if (b[row][column] == '4')
+    {
+        if (turn == 1)
+            turn = 0;
+        else if (turn == 0)
+            turn = 1;
+        b[row][column] = ' ';
+    }
 }
 
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col){
