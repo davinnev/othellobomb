@@ -22,50 +22,55 @@ void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_ro
 
 int main()
 {
-     int bsize;
+     int bsize = 0;
      cout << "Input board size between 8 to 14 (N x N): ";
      cin >> bsize;
+     
+     if (bsize >= 8 && bsize <= 16){
+          char ** board = new char * [bsize];
+          for (int i = 0; i < bsize; i++){
+               board[i] = new char [bsize];}
 
-     char ** board = new char * [bsize];
-     for (int i = 0; i < bsize; i++){
-          board[i] = new char [bsize];}
+          InputBoard(board, bsize);
+          PrintBoard(board, bsize);
 
-     InputBoard(board, bsize);
-     PrintBoard(board, bsize);
+          string userinput = "";
+          int turn = 0;
 
-     string userinput = "";
-     int turn = 0;
+          int row, column;
 
-     int row, column;
-
-     while (userinput != "quit")
-     {
-          row = 0;
-          column = 0;
-
-          int from_col, until_col, from_row, until_row;
-
-          if (turn == 0)
+          while (userinput != "quit")
           {
-               cout << "Player white turn, input block to fill: ";
-               GetUserInput(userinput, board, bsize);
-               turn = 1;
-               ModifyBoard(board, userinput, turn);
-               FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
-               PrintBoard(board, bsize);
-               continue;
-          }
+               row = 0;
+               column = 0;
 
-          else if (turn == 1)
-          {
-               cout << "Player black turn, input block to fill: ";
-               GetUserInput(userinput, board, bsize);
-               turn = 0;
-               ModifyBoard(board, userinput, turn);
-               FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col); 
-               PrintBoard(board, bsize);
-               continue;
+               int from_col, until_col, from_row, until_row;
+
+               if (turn == 0)
+               {
+                    cout << "Player white turn, input block to fill: ";
+                    GetUserInput(userinput, board, bsize);
+                    turn = 1;
+                    ModifyBoard(board, userinput, turn);
+                    FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
+                    PrintBoard(board, bsize);
+                    continue;
+               }
+
+               else if (turn == 1)
+               {
+                    cout << "Player black turn, input block to fill: ";
+                    GetUserInput(userinput, board, bsize);
+                    turn = 0;
+                    ModifyBoard(board, userinput, turn);
+                    FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col); 
+                    PrintBoard(board, bsize);
+                    continue;
+               }
           }
+     }
+     else{
+          cout << "Invalid input, please restart" << endl;
      }
 
      return 0;
@@ -94,14 +99,14 @@ void GetUserInput(string &input, char **b, int s){
      column--;
      
      //check if user input out of bounds
-     if (row > s || row < 1 || column < 1 || column > s){
-          cout << "Input out of bounds" << endl;
+     if (row > s || row < 0 || column < 0 || column > s){
+          cout << "Input out of bounds" << endl << "Try again: ";
           GetUserInput(input, b, s);
      }
 
      //check if user input already filled with disk
      if (b[row][column] == '0' || b[row][column] == '1'){
-          cout << "Board has been filled" << endl;
+          cout << "Board has been filled" << endl << "Try again: ";
           GetUserInput(input, b, s);
      }
           
