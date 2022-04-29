@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include "bomb1.h"
+#include "bomb2.h"
 using namespace std;
 
 #define BLACK "\xe2\x97\x8f"
