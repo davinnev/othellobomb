@@ -1,4 +1,7 @@
 #include <iostream>
+#include <cstdlib>
+#include <time.h>
+
 #include <string>
 #include "bomb1.h"
 #include "bomb2.h"
@@ -21,7 +24,7 @@ void flip_diagonal1(char **b, int from_row, int until_row, int from_col, int unt
 void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col); // to determine from which column & row until which column & row that the disk should be flipped
 void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (positive gradient)
 void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col); // wraps up all above flipable and flip functions
-
+void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs);
 
 int main()
 {
@@ -35,7 +38,14 @@ int main()
                board[i] = new char [bsize];}
 
           InputBoard(board, bsize);
+          
+          int no_of_bombs;
+          cout << "Input how many bombs do you want: ";
+          cin >> no_of_bombs;
+
           PrintBoard(board, bsize);
+
+          GenerateRandomPositionForBomb(board, bsize, no_of_bombs);
 
           string userinput = "";
           int turn = 0;
@@ -53,10 +63,10 @@ int main()
                {
                     cout << "Player white turn, input block to fill: ";
                     GetUserInput(userinput, board, bsize);
-                    turn = 1;
                     ModifyBoard(board, userinput, turn, bsize);
                     FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
                     PrintBoard(board, bsize);
+                    turn = 1;
                     continue;
                }
 
@@ -64,10 +74,10 @@ int main()
                {
                     cout << "Player black turn, input block to fill: ";
                     GetUserInput(userinput, board, bsize);
-                    turn = 0;
                     ModifyBoard(board, userinput, turn, bsize);
                     FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col); 
                     PrintBoard(board, bsize);
+                    turn = 1;
                     continue;
                }
           }
@@ -79,9 +89,37 @@ int main()
      return 0;
 }
 
+void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs){
+     srand(time(0));
+     for (int i = 2; i < no_of_bombs+2; i++){
+          int row = rand() % s;
+          int column = rand() % s;
+          // cout << "bomb " << i << " in postion b [" << row << "][" << column << "]" << endl;
+          if (b[row][column] != '0' && b[row][column] != '1' && b[row][column] != '1' && b[row][column] != '2' && b[row][column] != '3'){
+               if (i % 3 == 0){
+                    b[row][column] = '3'; //'3' for flip_color bomb
+               }
+               else if (i % 3 == 1){
+                    b[row][column] = '4'; //'4' for good bomb
+               }
+               else if (i % 3 == 2){
+                    b[row][column] = '2'; //'2' for erase bomb
+               }
+          }
+          else{
+               i--;
+          }
+     }
+}
+
 void GetUserInput(string &input, char **b, int s){
      cin >> input; //keep prompting user input until correct input is given
      
+     if (input == "quit"){
+          input = "quit";
+          return;
+     }
+
      //if user input in lower case, make it to uppercase
      if (input[0] >= 'a' && input[0] <= 'z'){
           input[0] = input[0] - ('a' - 'A');
