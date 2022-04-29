@@ -8,7 +8,7 @@ using namespace std;
 void InputBoard(char ** b, int s);
 void PrintBoard(char ** b, int s);
 void GetUserInput(string &input, char **b, int s); // get user input complete with error handling
-void ModifyBoard(char ** b, string input, int turn);
+void ModifyBoard(char ** b, string input, int &turn, int s);
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col); // to determine from which column until which column that the disk should be flipped
 void flip_horizontal(char **b, int from_col, int until_col, int turn, string input); // to flip in horizontal manner, given from which column until which column to be flipped
 void flipable_vertical(char ** b, string input, int s, int turn, int * from_row, int * until_row); // to determine from which row until which row that the disk should be flipped
@@ -51,7 +51,7 @@ int main()
                     cout << "Player white turn, input block to fill: ";
                     GetUserInput(userinput, board, bsize);
                     turn = 1;
-                    ModifyBoard(board, userinput, turn);
+                    ModifyBoard(board, userinput, turn, bsize);
                     FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
                     PrintBoard(board, bsize);
                     continue;
@@ -62,7 +62,7 @@ int main()
                     cout << "Player black turn, input block to fill: ";
                     GetUserInput(userinput, board, bsize);
                     turn = 0;
-                    ModifyBoard(board, userinput, turn);
+                    ModifyBoard(board, userinput, turn, bsize);
                     FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col); 
                     PrintBoard(board, bsize);
                     continue;
@@ -179,7 +179,7 @@ void PrintBoard(char ** b, int s)
      cout << endl;
 }
 
-void ModifyBoard(char ** b, string input, int turn)
+void ModifyBoard(char ** b, string input, int &turn, int s)
 {
      int row = 0, column = 0;
 
@@ -197,11 +197,28 @@ void ModifyBoard(char ** b, string input, int turn)
 
      column--;
 
-     if (turn == 0)
-          b[row][column] = '0';
-     else if (turn == 1)
-          b[row][column] = '1';
+     if (b[row][column] == ' ')
+     {
+         if (turn == 0)
+             b[row][column] = '0';
+         else if (turn == 1)
+             b[row][column] = '1';
+     }
 
+     else if (b[row][column] == '2')
+         Bomb1(b, s, row, column);
+
+     else if (b[row][column] == '3')
+         Bomb2(b, s, row, column);
+
+     else if (b[row][column] == '4')
+     {
+         if (turn == 0)
+             turn = 1;
+         else if (turn == 1)
+             turn = 0;
+         b[row][column] = ' ';
+     }
 }
 
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col){
