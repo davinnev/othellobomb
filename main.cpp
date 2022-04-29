@@ -182,8 +182,8 @@ void InputBoard(char ** b, int s)
               }
                b[i][j] = ' ';
          }
-         cout << endl;
     }
+    cout << endl;
 }
 
 void PrintBoard(char ** b, int s)
