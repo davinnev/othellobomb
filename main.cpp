@@ -12,7 +12,7 @@ using namespace std;
 
 void InputBoard(char ** b, int s);
 void PrintBoard(char ** b, int s);
-void GetUserInput(string &input, char **b, int s); // get user input complete with error handling
+string GetUserInput(char **b, int s); // get user input complete with error handling
 void ModifyBoard(char ** b, string input, int turn, int s);
 void Bomb3(char ** b, string input, int &turn, int s); // Bomb 3 lets the current player go on another turn
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col); // to determine from which column until which column that the disk should be flipped
@@ -53,7 +53,7 @@ int main()
 
           int row, column;
 
-          while (userinput != "quit")
+          while (true)
           {
                row = 0;
                column = 0;
@@ -63,10 +63,11 @@ int main()
                if (turn == 0)
                {
                     cout << "Player white turn, input block to fill: ";
-                    GetUserInput(userinput, board, bsize);
+                    userinput = GetUserInput(board, bsize);
                     if (userinput == "quit"){
                          break;
                     }
+                    cout << userinput << endl;
                     ModifyBoard(board, userinput, turn, bsize);
                     FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
                     PrintBoard(board, bsize);
@@ -78,7 +79,7 @@ int main()
                else if (turn == 1)
                {
                     cout << "Player black turn, input block to fill: ";
-                    GetUserInput(userinput, board, bsize);
+                    userinput = GetUserInput(board, bsize);
                     if (userinput == "quit"){
                          break;
                     }
@@ -122,46 +123,50 @@ void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs){
      }
 }
 
-void GetUserInput(string &input, char **b, int s){
-     cin >> input; //keep prompting user input until correct input is given
-     
-     if (input == "quit"){
-          input = "quit";
-          return;
+string GetUserInput(char **b, int s){
+     bool correct = false;
+     string input;
+     while (correct == false){
+          cin >> input; //keep prompting user input until correct input is given
+          correct = true;
+          if (input == "quit"){
+               return input;
+          }
+          //if user input in lower case, make it to uppercase
+          if (input[0] >= 'a' && input[0] <= 'z'){
+               input[0] = input[0] - ('a' - 'A');
+          }
+          //get row and column in integer form
+          int row = 0, column = 0;
+          if (input.length() == 3)
+          {
+               row = (int) input[0] - 65;
+               column += 10;
+               column += ((int) input[2]-48);
+          }
+          else if (input.length() == 2)
+          {
+               row = (int) input[0] - 65;
+               column += (int) input[1] - 48;
+          }
+          column--;
+          cout << "row : " << row << " column : " << column << endl;
+          //check for out of bounds
+          bool out_of_bounds = false;
+          if (row < 0 || row > s || column < 0 || column > s){
+               cout << "input out of bounds" << endl << "Please try again: ";
+               correct = false;
+               out_of_bounds = true;
+          }
+          //check for input in filled box
+          if (out_of_bounds == false){
+               if (b[row][column] == '0' || b[row][column] == '1'){
+                    cout << "Board has been filled" << endl << "Please try again: ";
+                    correct = false;
+               }
+          }
      }
-
-     //if user input in lower case, make it to uppercase
-     if (input[0] >= 'a' && input[0] <= 'z'){
-          input[0] = input[0] - ('a' - 'A');
-     }
-
-     int row = 0, column = 0;
-     if (input.length() == 3)
-     {
-          row = (int) input[0] - 65;
-          column += 10;
-          column += ((int) input[2]-48);
-     }
-     else if (input.length() == 2)
-     {
-          row = (int) input[0] - 65;
-          column += (int) input[1] - 48;
-     }
-     column--;
-     
-     //check if user input out of bounds
-     if (row > s || row < 0 || column < 0 || column > s){
-          cout << "Input out of bounds" << endl << "Try again: ";
-          GetUserInput(input, b, s);
-     }
-
-     //check if user input already filled with disk
-     if (b[row][column] == '0' || b[row][column] == '1'){
-          cout << "Board has been filled" << endl << "Try again: ";
-          GetUserInput(input, b, s);
-     }
-          
-     return;
+     return input;
 }
 
 void InputBoard(char ** b, int s)
@@ -223,7 +228,7 @@ void PrintBoard(char ** b, int s)
                {
                     cout << "| " << ' ' << " ";
                     continue;
-               }
+               } 
                cout << "| " << b[i][k] << " ";
           }
           cout << "|" << endl;
