@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <time.h>
-
+#include <fstream>
 #include <string>
 #include "bomb1.h"
 #include "bomb2.h"
@@ -14,6 +14,7 @@ void InputBoard(char ** b, int s);
 void PrintBoard(char ** b, int s);
 string GetUserInput(char **b, int s); // get user input complete with error handling
 int GetBoardSize();
+bool CountEmpty(char ** b, int s);
 int get_row(string input);
 int get_column(string input);
 void ModifyBoard(char ** b, string input, int turn, int s);
@@ -28,7 +29,7 @@ void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row
 void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (negative gradient)
 void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col); // wraps up all above flipable and flip functions
 void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs);
-void CountScore(char ** b, int s); //count the score of each player and decide winner
+void CountScore(char ** b, int s, string p1, string p2); //count the score of each player, decide winner, store in leaderboard
 
 int main()
 {
@@ -44,6 +45,12 @@ int main()
      int no_of_bombs;
      cout << "Input how many bombs do you want: ";
      cin >> no_of_bombs;
+     
+     string player1, player2;
+     cout << "Player 1 name (white): ";
+     cin >> player1;
+     cout << "Player 2 name (black): ";
+     cin >> player2;
 
      PrintBoard(board, bsize);
 
@@ -54,7 +61,7 @@ int main()
 
      int row, column;
 
-     while (true)
+    while (CountEmpty(board, bsize ))
      {
           row = 0;
           column = 0;
@@ -100,7 +107,20 @@ int main()
                continue;
           }
      }
-     CountScore(board, bsize);
+     CountScore(board, bsize, player1, player2);
+     return 0;
+}
+
+bool CountEmpty(char ** b, int s)
+{
+     for (int i = 0; i < s; i++)
+     {
+          for (int j = 0; j < s; j++)
+          {
+               if (b[i][j] == ' ')
+                    return 1;
+          }
+     }
      return 0;
 }
 
@@ -300,7 +320,7 @@ void Bomb3(char ** b, string input, int &turn, int s)
     }
 }
 
-void CountScore(char ** b, int s){
+void CountScore(char ** b, int s, string p1, string p2){
      int white_counter = 0, black_counter = 0;
 
      for (int i = 0; i < s; i++){
@@ -315,6 +335,114 @@ void CountScore(char ** b, int s){
      }
      cout << "White Player Score: " << white_counter << endl;
      cout << "Black Player Score: " << black_counter << endl;
+     
+     ofstream fout("leaderboard_temp.txt", ios::app);
+     ifstream fin("leaderboard.txt");
+
+     string pname = "";
+     string line;
+     int counter = 0;
+
+     while (getline(fin, line))
+     {
+          ofstream fout("leaderboard_temp.txt", ios::app);
+          ifstream fin("leaderboard.txt");
+          pname = "";
+
+          for (int i = 0; i < line.length(); i++)
+          {
+               if (line[i] != ' ')
+                    pname += line[i];
+               else if (line[i] == ' ')
+                    break;
+          }
+
+          cout << pname;
+
+          if (white_counter > black_counter)
+          {
+               string currentrecord = line.substr(p1.length()+1, 2);
+               int crecord = atoi(currentrecord.c_str());
+               int newrecord = (white_counter*100/(s*s));
+
+               cout << newrecord;
+
+               if (pname != p1)
+                    continue;
+
+               else if (pname == p1)
+               {
+                    if (crecord < newrecord)
+                    {
+                         line.replace(p1.length()+1, currentrecord.length(), to_string(newrecord));
+                         fout << line << endl;
+                         remove("leaderboard.txt");
+                         ofstream fout("leaderboard.txt", ios::app);
+                         ifstream fin("leaderboard_temp.txt");
+                         while (getline(fin, line))
+                              fout << line;
+                         remove("leaderboard_temp.txt");
+                         fout.close();
+                         fin.close();
+                    }
+                    counter = 1;
+                    break;
+               }
+         }
+
+         else if (white_counter < black_counter)
+         {
+              string currentrecord = line.substr(p2.length()+1, 2);
+              int crecord = atoi(currentrecord.c_str());
+              int newrecord = (black_counter*100/(s*s));
+
+              if (pname != p2)
+                   continue;
+
+              else if (pname == p2)
+              {
+                   if (crecord < newrecord)
+                   {
+                        line.replace(p2.length()+1, currentrecord.length(), to_string(newrecord));
+                        fout << line << endl;
+                        remove("leaderboard.txt");
+                        ofstream fout("leaderboard.txt", ios::app);
+                        ifstream fin("leaderboard_temp.txt");
+                        while (getline(fin, line))
+                             fout << line;
+                        remove("leaderboard_temp.txt");
+                        fout.close();
+                        fin.close();
+                   }
+                   counter = 1;
+                   break;
+              }
+         }
+         fout << line;
+     }
+
+     ofstream fout2("leaderboard.txt", ios::app);
+     if (counter == 0)
+     {
+         if (white_counter > black_counter)
+         {
+                 fout2 << p1 << " ";
+                 fout2 << (white_counter*100/(s*s)) << "% of board filled";
+                 fout2 << endl;
+         }
+
+         else if (white_counter < black_counter)
+         {
+                 fout2 << p2 << " ";
+                 fout2 << (black_counter*100/(s*s)) << "% of board filled";
+                 fout2 << endl;
+         }
+
+         remove("leaderboard_temp.txt");
+     }
+
+     fin.close();
+     fout2.close();
      
      if (white_counter > black_counter){
           cout << "White " << WHITE << " Player Wins" << endl;
