@@ -338,7 +338,7 @@ void CountScore(char ** b, int s, string p1, string p2){
      
      ofstream fout("leaderboard_temp.txt", ios::app);
      ifstream fin("leaderboard.txt");
-
+     
      string pname = "";
      string line;
      int counter = 0;
@@ -357,18 +357,17 @@ void CountScore(char ** b, int s, string p1, string p2){
                     break;
           }
 
-          cout << pname;
-
           if (white_counter > black_counter)
           {
                string currentrecord = line.substr(p1.length()+1, 2);
                int crecord = atoi(currentrecord.c_str());
                int newrecord = (white_counter*100/(s*s));
 
-               cout << newrecord;
-
                if (pname != p1)
+               {
+                    fout << line << endl;
                     continue;
+               }
 
                else if (pname == p1)
                {
@@ -380,7 +379,7 @@ void CountScore(char ** b, int s, string p1, string p2){
                          ofstream fout("leaderboard.txt", ios::app);
                          ifstream fin("leaderboard_temp.txt");
                          while (getline(fin, line))
-                              fout << line;
+                              fout << line << endl;
                          remove("leaderboard_temp.txt");
                          fout.close();
                          fin.close();
@@ -388,62 +387,64 @@ void CountScore(char ** b, int s, string p1, string p2){
                     counter = 1;
                     break;
                }
-         }
+          }
 
-         else if (white_counter < black_counter)
-         {
-              string currentrecord = line.substr(p2.length()+1, 2);
-              int crecord = atoi(currentrecord.c_str());
-              int newrecord = (black_counter*100/(s*s));
+          else if (white_counter < black_counter)
+          {
+               string currentrecord = line.substr(p2.length()+1, 2);
+               int crecord = atoi(currentrecord.c_str());
+               int newrecord = (black_counter*100/(s*s));
 
-              if (pname != p2)
-                   continue;
+               if (pname != p2)
+               {
+                    fout << line << endl;
+                    continue;
+               }
 
-              else if (pname == p2)
-              {
-                   if (crecord < newrecord)
-                   {
-                        line.replace(p2.length()+1, currentrecord.length(), to_string(newrecord));
-                        fout << line << endl;
-                        remove("leaderboard.txt");
-                        ofstream fout("leaderboard.txt", ios::app);
-                        ifstream fin("leaderboard_temp.txt");
-                        while (getline(fin, line))
-                             fout << line;
-                        remove("leaderboard_temp.txt");
-                        fout.close();
-                        fin.close();
-                   }
-                   counter = 1;
-                   break;
-              }
-         }
-         fout << line;
+               else if (pname == p2)
+               {
+                    if (crecord < newrecord)
+                    {
+                         line.replace(p2.length()+1, currentrecord.length(), to_string(newrecord));
+                         fout << line << endl;
+                         remove("leaderboard.txt");
+                         ofstream fout("leaderboard.txt", ios::app);
+                         ifstream fin("leaderboard_temp.txt");
+                         while (getline(fin, line))
+                              fout << line << endl;
+                         remove("leaderboard_temp.txt");
+                         fout.close();
+                         fin.close();
+                    }
+                    counter = 1;
+                    break;
+               }
+          }
      }
 
      ofstream fout2("leaderboard.txt", ios::app);
      if (counter == 0)
      {
-         if (white_counter > black_counter)
-         {
-                 fout2 << p1 << " ";
-                 fout2 << (white_counter*100/(s*s)) << "% of board filled";
-                 fout2 << endl;
-         }
+          if (white_counter > black_counter)
+          {
+               fout2 << p1 << " ";
+               fout2 << (white_counter*100/(s*s)) << "% of board filled";
+               fout2 << endl;
+          }
 
-         else if (white_counter < black_counter)
-         {
-                 fout2 << p2 << " ";
-                 fout2 << (black_counter*100/(s*s)) << "% of board filled";
-                 fout2 << endl;
-         }
-
-         remove("leaderboard_temp.txt");
+          else if (white_counter < black_counter)
+          {
+               fout2 << p2 << " ";
+               fout2 << (black_counter*100/(s*s)) << "% of board filled";
+               fout2 << endl;
+          }
+          remove("leaderboard_temp.txt");
      }
 
      fin.close();
      fout2.close();
      
+
      if (white_counter > black_counter){
           cout << "White " << WHITE << " Player Wins" << endl;
      }
