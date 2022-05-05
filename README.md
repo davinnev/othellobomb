@@ -7,10 +7,10 @@ Topic: Othello Bomb
 Link: https://github.com/davinnev/othellobomb  
 
 Game Description:  
-Othello is a two-player strategy board game played on a square uncheckered board. Players will take turns placing disks on the board (beginning with the player who has the black disc). Any disk of the opponent's color that is bounded by the current player's disk in the horizontal, vertical, or diagonal will be flipped over to the current player's color. When the board is full, the game is over. At the end of the game, the player with the most disks with his assigned color facing up is declared the winner. In this Othello game, there is a slight modification where there will be bombs placed on the map at random, which may benefit or harm the players.
+Othello is a two-player strategy board game played on a square uncheckered board. Players will take turns placing disks on the board (beginning with the player who has the black disc). Any disk of the opponent's color that is bounded by the current player's disk in the horizontal, vertical, or diagonal will be flipped over to the current player's color. When the board is full, or the user chooses to quit, the game is over. At the end of the game, the player with the most disks with his assigned color facing up is declared the winner. In this Othello game, there is a slight modification where there will be bombs placed on the map at random, which may benefit or harm the players.
 
 Rules:
-1. Players are allowed to determine the board size from 8x8 to 16x16 and must be an even number. The board shape is a square.
+1. Players are allowed to determine the board size from 6x6 to 10x10 and must be an even number. The board shape is a square.
 2. Aside from board size, players are also able to determine the number of bombs. There are 3 types of bomb:
       a. The Evil Bomb: Once a player decides to put the disk on the square containing this bomb, the bomb will clear out all disks located in the same 
          column and row (e.g. if an evil bomb is located in (0, 4), all the disks on the first row and fifth column will be wiped out).
@@ -32,10 +32,21 @@ Features:
 2. Data structures for storing game status:  
 	We use 2D array for the board that will store the disk (denoted by either ◦ (unicode number: &#9702) or • (unicode number: &#8226)).
 3. Dynamic memory management:   
-	Each move will dynamically change the 2D array members since every move will flip the disk into the current player’s color.
+	user can choose the number of tiles for the board, then we will make a new 2D array that will store the disks according to user preferences .
 4. File input/output (e.g., for loading/saving game status):  
 	- input: player move (row column).
 	- output: print the updated board.
+	- // to be fixed //
 5. Program codes in multiple files:   
 	- The main function which consists of the game flow from the beginning to the end will be separated into one separate file.
 	- The mechanism and effect of every type of bomb will be stored in different files.
+	- // to be fixed //
+
+List of non-standard C++ Libraries:
+None
+
+Compilation and execution instructions. Simply put, this serves like a "Quick start" of your game:
+1. Clone this repo to your local computer
+2. Compile the program using: g++ -pedantic-errors -std=c++11 main.cpp bomb1.cpp bomb2.cpp -o othellobomb
+3. Run the program by typing ./othellobomb in your terminal or command prompt
+4. If you are prompted for board size, if means that the game have starts sucessfully
