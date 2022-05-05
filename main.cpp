@@ -16,10 +16,10 @@ using namespace std;
 void InputBoard(char ** b, int s);
 void PrintBoard(char ** b, int s);
 string GetUserInput(char **b, int s); // get user input complete with error handling
-int GetBoardSize();
+int GetBoardSize(); // get user input of the size of board
 bool CountEmpty(char ** b, int s);
-int get_row(string input);
-int get_column(string input);
+int get_row(string input); //to get the integer representation of row (ex: A1 -> row = 0, B0 -> row = 1)
+int get_column(string input); //to get the integer representation of column (ex: A1 -> col = 1, B0 -> col = 0)
 void ModifyBoard(char ** b, string input, int turn, int s);
 void Bomb3(char ** b, string input, int &turn, int s); // Bomb 3 lets the current player go on another turn
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col); // to determine from which column until which column that the disk should be flipped
