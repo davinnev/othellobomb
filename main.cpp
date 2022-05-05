@@ -80,7 +80,7 @@ int main()
           {
                cout << "Player white " << WHITE << " turn, input block to fill: ";
                userinput = GetUserInput(board, bsize);
-               if (userinput == "quit"){
+               if (userinput == "quit" || userinput == "QUIT"){
                     break;
                }
                from_row = get_row(userinput); until_row = get_row(userinput); 
@@ -99,7 +99,7 @@ int main()
           {
                cout << "Player black " << BLACK << " turn, input block to fill: ";
                userinput = GetUserInput(board, bsize);
-               if (userinput == "quit"){
+               if (userinput == "quit" || userinput == "QUIT"){
                     break;
                }
 
@@ -475,7 +475,7 @@ void flipable_horizontal(char ** b, string input, int s, int turn, int * from_co
      int row = get_row(input), column = get_column(input);
      char my_turn = turn + 48;
      //from
-     for (int i = column; i > 0; i--){
+     for (int i = column; i >= 0; i--){
           if (b[row][i] != '0' && b[row][i] != '1' && i != column){
                *from_col = column;
                break;
@@ -485,9 +485,7 @@ void flipable_horizontal(char ** b, string input, int s, int turn, int * from_co
                break;
           } 
      }
-     if (column == 0){ //case for index = 0
-          *from_col = 0;
-     }
+     
      //until
      for (int j = column; j < s; j++){
           if (b[row][j] != '0' && b[row][j] != '1' && j != column){
@@ -499,9 +497,7 @@ void flipable_horizontal(char ** b, string input, int s, int turn, int * from_co
                break;
           } 
      }
-     if (column == s-1){ //case for index = s-1
-          *until_col = s-1;
-     }
+     
 }
 
 void flip_horizontal(char **b, int from_col, int until_col, int turn, string input){
@@ -521,7 +517,7 @@ void flipable_vertical(char ** b, string input, int s, int turn, int * from_row,
      char my_turn = turn + 48;
      
      //from
-     for (int i = row; i > 0; i--){
+     for (int i = row; i >= 0; i--){
           if (b[i][column] != '0' && b[i][column] != '1' && i != row){
                *from_row = row;
                break;
@@ -531,9 +527,7 @@ void flipable_vertical(char ** b, string input, int s, int turn, int * from_row,
                break;
           } 
      }
-     if (row == 0){ //case for index = 0
-          *from_row = 0;
-     }
+     
      //until
      for (int j = row; j < s; j++){
           if (b[j][column] != '0' && b[j][column] != '1' && j != row){
@@ -545,9 +539,7 @@ void flipable_vertical(char ** b, string input, int s, int turn, int * from_row,
                break;
           } 
      }
-     if (row == s-1){
-          *until_row = s-1;
-     }
+
 }
 
 void flip_vertical(char **b, int from_row, int until_row, int turn, string input){
@@ -568,7 +560,7 @@ void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row
      char my_turn = turn + 48;
      //from
      int i = 1;
-     while (origin_column - i > 0 && origin_row - i > 0){
+     while (origin_column - i >= 0 && origin_row - i >= 0){
           if (b[origin_row - i][origin_column - i] != '0' && b[origin_row - i][origin_column - i] != '1'){
                *from_col = origin_column;
                *from_row = origin_row;
@@ -580,10 +572,6 @@ void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row
                break;
           }
           i++;
-     }
-     if (origin_row == 0 && origin_column == 0){
-          *from_col = 0;
-          *from_row = 0;
      }
 
      //until
@@ -600,10 +588,6 @@ void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row
                break;
           }
           j++;
-     }
-     if (origin_row == s-1 && origin_column == s-1){
-          *from_col = s-1;
-          *from_row = s-1;
      }
 }
 
@@ -625,7 +609,7 @@ void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row
      char my_turn = turn + 48;
      //from
      int i = 1;
-     while (origin_row + i < s && origin_column - i > 0){
+     while (origin_row + i < s && origin_column - i >= 0){
           if (b[origin_row + i][origin_column - i] != '0' && b[origin_row + i][origin_column - i] != '1'){
                *from_row = origin_row;
                *from_col = origin_column;
@@ -638,14 +622,10 @@ void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row
           }
           i++;
      }
-     if (origin_row == s-1 && origin_column == 0){
-          *from_row = s-1;
-          *from_col = 0;
-     }
 
      //until
      int j = 1;
-     while (origin_row - j > 0 && origin_column + j < s){
+     while (origin_row - j >= 0 && origin_column + j < s){
           if (b[origin_row - j][origin_column + j] != '0' && b[origin_row - j][origin_column + j] != '1'){
                *until_row = origin_row;
                *until_col = origin_column;
@@ -658,11 +638,6 @@ void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row
           }
           j++;
      }
-     if (origin_row == 0 && origin_column == s-1){
-          *from_row = 0;
-          *from_col = s-1;
-     }
-     
 }
 
 void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input){
