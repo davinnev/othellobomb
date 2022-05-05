@@ -435,9 +435,29 @@ void CountScore(char ** b, int s, string p1, string p2){
                     break;
                }
           }
+          fout.close();
+          fin.close();
      }
-
+     
+     fout.close();
+     fin.close();
+     
+     ifstream fin2("leaderboard.txt");
      ofstream fout2("leaderboard.txt", ios::app);
+
+     int count = 0;
+     while (getline(fin2, line))
+         count++;
+
+     if (count == 0)
+     {
+         fout2 << "**************************************" << endl;
+         fout2 << "PERSONAL RECORD OF THE WINNING PLAYERS" << endl;
+         fout2 << "        IN OTHELLO BOMB HISTORY       " << endl;
+         fout2 << "**************************************" << endl;
+     }
+     fin2.close();
+     
      if (counter == 0)
      {
           if (white_counter > black_counter)
@@ -456,7 +476,6 @@ void CountScore(char ** b, int s, string p1, string p2){
           remove("leaderboard_temp.txt");
      }
 
-     fin.close();
      fout2.close();
      
 
