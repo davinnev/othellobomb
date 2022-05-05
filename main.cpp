@@ -9,6 +9,9 @@ using namespace std;
 
 #define BLACK "\xe2\x97\x8f"
 #define WHITE "\xe2\x97\x8c"
+#define SILLY "\xf0\x9f\x98\x86"
+#define NICE "\xf0\x9f\x98\x87"
+#define EVIL "\xf0\x9f\x98\x88"
 
 void InputBoard(char ** b, int s);
 void PrintBoard(char ** b, int s);
@@ -239,6 +242,7 @@ void InputBoard(char ** b, int s)
 
 void PrintBoard(char ** b, int s)
 {
+     cout << endl;
      cout << "  ";
      for (int i = 0; i < s; i++)
      {
@@ -298,10 +302,16 @@ void ModifyBoard(char ** b, string input, int turn, int s)
      }
      
      else if (b[row][column] == '2')
+     {
+         cout << "You stepped on The Evil Bomb!" << " " << EVIL << endl;
          Bomb1(b, s, row, column);
+     }
 
      else if (b[row][column] == '3')
+     {
+         cout << "You stepped on The Silly Bomb!" << " " << SILLY << endl;
          Bomb2(b, s, row, column);
+     }
 }
 
 void Bomb3(char ** b, string input, int &turn, int s)
@@ -310,6 +320,7 @@ void Bomb3(char ** b, string input, int &turn, int s)
 
     if (b[row][column] == '4')
     {
+        cout << "You stepped on The Nice Bomb!" << " " << NICE << endl;
         if (turn == 1)
         {
             turn = 0;
