@@ -33,6 +33,11 @@ void CountScore(char ** b, int s, string p1, string p2); //count the score of ea
 
 int main()
 {
+     cout << endl;
+     cout << "*******************************************" << endl;
+     cout << "          WELCOME TO OTHELLO BOMB          " << endl;
+     cout << "                LET'S PLAY!                " << endl;
+     cout << "*******************************************" << endl;
      cout << "Input board size between 6 to 10 (N x N): ";
      int bsize = GetBoardSize();
      
