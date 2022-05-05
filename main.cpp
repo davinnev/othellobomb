@@ -42,7 +42,7 @@ int main()
      cout << "                LET'S PLAY!                " << endl;
      cout << "*******************************************" << endl;
      cout << "Input board size between 6 to 10 (N x N): ";
-     int bsize = GetBoardSize();
+     int bsize = GetBoardSize(); //assume user input integer
      
      char ** board = new char * [bsize];
      for (int i = 0; i < bsize; i++){
@@ -52,7 +52,7 @@ int main()
      
      int no_of_bombs;
      cout << "Input how many bombs do you want: ";
-     cin >> no_of_bombs;
+     cin >> no_of_bombs; // assume no of bombs not more than bsize*bsize
      
      string player1, player2;
      cout << "Player 1 name (white): ";
@@ -237,7 +237,6 @@ void InputBoard(char ** b, int s)
                b[i][j] = ' ';
          }
     }
-    cout << endl;
 }
 
 void PrintBoard(char ** b, int s)
