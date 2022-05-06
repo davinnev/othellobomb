@@ -95,7 +95,7 @@ int main()
                until_row = get_row(userinput); 
                from_col = get_column(userinput); 
                until_col = get_column(userinput);
-
+          
                ModifyBoard(board, userinput, turn, bsize);
                FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
                PrintBoard(board, bsize);
@@ -235,7 +235,7 @@ string GetUserInput(char **b, int s){
 
           //check for out of bounds
           bool out_of_bounds = false;
-          if (row < 0 || row > s || column < 0 || column > s){
+          if (row < 0 || row >= s || column < 0 || column >= s){
                cout << "input out of bounds" << endl << "Please try again: ";
                correct = false;
                out_of_bounds = true;
