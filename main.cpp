@@ -1,26 +1,27 @@
 #include <iostream>
 #include <cstdlib>
-#include <time.h>
-#include <fstream>
+#include <time.h> // as seed in random function, to randomized bomb position
+#include <fstream> // input and output leaderboard file
 #include <string>
-#include "bomb1.h"
-#include "bomb2.h"
+#include "bomb1.h" // helps linking this file with bomb1.cpp
+#include "bomb2.h" // helps linking this file with bomb2.cpp
 using namespace std;
 
+// define symbols used in game execution
 #define BLACK "\xe2\x97\x8f"
 #define WHITE "\xe2\x97\x8c"
 #define SILLY "\xf0\x9f\x98\x86"
 #define NICE "\xf0\x9f\x98\x87"
 #define EVIL "\xf0\x9f\x98\x88"
 
-void InputBoard(char ** b, int s);
-void PrintBoard(char ** b, int s);
+void InputBoard(char ** b, int s); // to fill the array of the board
+void PrintBoard(char ** b, int s); // to print the current board condition
 string GetUserInput(char **b, int s); // get user input complete with error handling
 int GetBoardSize(); // get user input of the size of board
-bool CountEmpty(char ** b, int s);
+bool CountEmpty(char ** b, int s); // check if there is any empty block / no (check whether the game is finished)
 int get_row(string input); //to get the integer representation of row (ex: A1 -> row = 0, B0 -> row = 1)
 int get_column(string input); //to get the integer representation of column (ex: A1 -> col = 1, B0 -> col = 0)
-void ModifyBoard(char ** b, string input, int turn, int s);
+void ModifyBoard(char ** b, string input, int turn, int s); // modify the board according to user input
 void Bomb3(char ** b, string input, int &turn, int s); // Bomb 3 lets the current player go on another turn
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col); // to determine from which column until which column that the disk should be flipped
 void flip_horizontal(char **b, int from_col, int until_col, int turn, string input); // to flip in horizontal manner, given from which column until which column to be flipped
@@ -31,7 +32,7 @@ void flip_diagonal1(char **b, int from_row, int until_row, int from_col, int unt
 void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col); // to determine from which column & row until which column & row that the disk should be flipped
 void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (negative gradient)
 void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col); // wraps up all above flipable and flip functions
-void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs);
+void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs); // determining bomb types and positions in the game
 void CountScore(char ** b, int s, string p1, string p2); //count the score of each player, decide winner, store in leaderboard
 
 int main()
@@ -41,35 +42,40 @@ int main()
      cout << "          WELCOME TO OTHELLO BOMB          " << endl;
      cout << "                LET'S PLAY!                " << endl;
      cout << "*******************************************" << endl;
+     
+     // prompt user to determine the board size, accept the input and check if the input is valid (error handling)
      cout << "Input board size between 6 to 10 (N x N): ";
      int bsize = GetBoardSize(); //assume user input integer
      
+     // make the board array using new keyword (dynamic array) because the board size depends on user's input
      char ** board = new char * [bsize];
      for (int i = 0; i < bsize; i++){
           board[i] = new char [bsize];}
 
      InputBoard(board, bsize);
      
+     // prompt user to determine number of bombs 
      int no_of_bombs;
      cout << "Input how many bombs do you want: ";
      cin >> no_of_bombs; // assume no of bombs not more than bsize*bsize
      
+     // fill players' name (needed for the leaderboard data)
      string player1, player2;
      cout << "Player 1 name (white): ";
      cin >> player1;
      cout << "Player 2 name (black): ";
      cin >> player2;
-
+     
      PrintBoard(board, bsize);
 
      GenerateRandomPositionForBomb(board, bsize, no_of_bombs);
 
      string userinput = "";
-     int turn = 0;
+     int turn = 0; // to determine which player's turn it is
 
      int row, column;
 
-    while (CountEmpty(board, bsize ))
+     while (CountEmpty(board, bsize )) // while there is still an empty space on the board
      {
           row = 0;
           column = 0;
@@ -78,62 +84,70 @@ int main()
 
           if (turn == 0)
           {
-               cout << "Player white " << WHITE << " turn, input block to fill: ";
+               cout << "Player white " << WHITE << " turn, input block to fill: "; // prompt the user to fill a space on the board
                userinput = GetUserInput(board, bsize);
-               if (userinput == "quit" || userinput == "QUIT"){
+               if (userinput == "quit" || userinput == "QUIT"){ // if the user want to quit the game
                     break;
                }
+               
+               // convert the user input into the index of the block in the 2D array
                from_row = get_row(userinput); until_row = get_row(userinput); 
                from_col = get_column(userinput); until_col = get_column(userinput);
 
                ModifyBoard(board, userinput, turn, bsize);
                FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
                PrintBoard(board, bsize);
-
+               
+               // give the next move to another player
                turn = 1;
+               // check if the player stepped on Bomb3
                Bomb3(board, userinput, turn, bsize);
                continue;
           }
 
           else if (turn == 1)
           {
-               cout << "Player black " << BLACK << " turn, input block to fill: ";
+               cout << "Player black " << BLACK << " turn, input block to fill: "; // prompt the user to fill a space on the board
                userinput = GetUserInput(board, bsize);
-               if (userinput == "quit" || userinput == "QUIT"){
+               if (userinput == "quit" || userinput == "QUIT"){ // if the user want to quit the game
                     break;
                }
-
+                   
+               // convert the user input into the index of the block in the 2D array
                from_row = get_row(userinput); until_row = get_row(userinput); 
                from_col = get_column(userinput); until_col = get_column(userinput);
 
                ModifyBoard(board, userinput, turn, bsize);
                FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
                PrintBoard(board, bsize);
-
+               
+               // give the next move to another player
                turn = 0;
+               // check if the player stepped on Bomb3
                Bomb3(board, userinput, turn, bsize);
                continue;
           }
      }
+     // if the game has finished, count the score of both players and store it into the leaderboard file if any player breaks the record
      CountScore(board, bsize, player1, player2);
      return 0;
 }
 
-bool CountEmpty(char ** b, int s)
+bool CountEmpty(char ** b, int s) // to determine whether the game has finished
 {
      for (int i = 0; i < s; i++)
      {
           for (int j = 0; j < s; j++)
           {
-               if (b[i][j] == ' ')
+               if (b[i][j] == ' ') // if there is still a space filled with the char ' ', the game has not yet finished
                     return 1;
           }
      }
-     return 0;
+     return 0; // no empty space, the game has finished
 }
 
 int get_row(string input){
-     int row = (int) input[0] - 65;
+     int row = (int) input[0] - 65; G
      return row;
 }
 
@@ -218,23 +232,23 @@ string GetUserInput(char **b, int s){
      return input;
 }
 
-void InputBoard(char ** b, int s)
+void InputBoard(char ** b, int s) // to fill the 2d array at the beginning of the game
 {
-    for (int i = 0; i < s; i++)
+    for (int i = 0; i < s; i++) // i = row index
     {
-         for (int j = 0; j < s; j++)
+         for (int j = 0; j < s; j++) // j = column index
          {
-              if ((i == (s/2-1) && j == (s/2-1)) || (i == (s/2) && j == (s/2)))
+              if ((i == (s/2-1) && j == (s/2-1)) || (i == (s/2) && j == (s/2))) // to fill the 4 middle boxes 
               {
                    b[i][j] = '0';
                    continue;
               }
-              else if ((i == (s/2-1) && j == (s/2)) || (i == (s/2) && j == (s/2-1)))
+              else if ((i == (s/2-1) && j == (s/2)) || (i == (s/2) && j == (s/2-1))) // to fill the 4 middle boxes 
               {
                    b[i][j] = '1';
                    continue;
               }
-               b[i][j] = ' ';
+               b[i][j] = ' '; // if it is not one of the 4 middle boxes, fill the space with ' '
          }
     }
 }
@@ -245,10 +259,12 @@ void PrintBoard(char ** b, int s)
      cout << "  ";
      for (int i = 0; i < s; i++)
      {
+          // to make the printed board aligned neatly
+          // print column name
           if (i >= 9)
                cout << " " << i+1 << " ";
           else if (i < 9)
-               cout << "  " << i+1 << " ";
+               cout << "  " << i+1 << " "; 
      }
      cout << endl;
 
@@ -259,21 +275,21 @@ void PrintBoard(char ** b, int s)
                cout << "---" << " ";
           cout << endl;
 
-          cout << (char) ('A'+i) << " ";
+          cout << (char) ('A'+i) << " "; // print row name
           for (int k = 0; k < s; k++)
           {
                if (b[i][k] == '0')
                {
-                    cout << "| " << WHITE << " ";
+                    cout << "| " << WHITE << " "; // convert the char '0' in the array to the white disk symbol
                     continue;
                }
 
                else if (b[i][k] == '1')
                {
-                    cout << "| " << BLACK << " ";
+                    cout << "| " << BLACK << " "; // convert the char '1' in the array to the black disk symbol
                     continue;
                }
-               else if (b[i][k] == '2' || b[i][k] == '3' || b[i][k] == '4')
+               else if (b[i][k] == '2' || b[i][k] == '3' || b[i][k] == '4') // meaning that the space b[i][k] is filled with a bomb (not printed/hidden)
                {
                     cout << "| " << ' ' << " ";
                     continue;
@@ -292,24 +308,24 @@ void ModifyBoard(char ** b, string input, int turn, int s)
 {
      int row = get_row(input), column = get_column(input);
 
-     if (b[row][column] == ' ')
+     if (b[row][column] == ' ') // find the position of the space filled by current player
      {
-         if (turn == 0)
+         if (turn == 0) // if it's player white's turn, change ' ' into '0'
              b[row][column] = '0';
-         else if (turn == 1)
+         else if (turn == 1) // if it's player black's turn, change ' ' into '1'
              b[row][column] = '1';
      }
      
      else if (b[row][column] == '2')
      {
          cout << "You stepped on The Evil Bomb!" << " " << EVIL << endl;
-         Bomb1(b, s, row, column);
+         Bomb1(b, s, row, column); // call the Bomb1 function in the bomb1.cpp file to make the bomb works
      }
 
      else if (b[row][column] == '3')
      {
          cout << "You stepped on The Silly Bomb!" << " " << SILLY << endl;
-         Bomb2(b, s, row, column);
+         Bomb2(b, s, row, column); // call the Bomb2 function in the bomb2.cpp file to make the bomb works
      }
 }
 
@@ -320,16 +336,17 @@ void Bomb3(char ** b, string input, int &turn, int s)
     if (b[row][column] == '4')
     {
         cout << "You stepped on The Nice Bomb!" << " " << NICE << endl;
+        // if the player steps on char '4', we give the turn back to the player so he/she can have another turn
         if (turn == 1)
         {
             turn = 0;
-            b[row][column] = '0';
+            b[row][column] = '0'; // remove the used bomb with the player's disk
             PrintBoard(b, s);
         }
         else if (turn == 0)
         {
             turn = 1;
-            b[row][column] = '1';
+            b[row][column] = '1'; // remove the used bomb with the player's disk
             PrintBoard(b, s);
         }
     }
@@ -338,18 +355,20 @@ void Bomb3(char ** b, string input, int &turn, int s)
 void CountScore(char ** b, int s, string p1, string p2){
      int white_counter = 0, black_counter = 0;
 
+     // iterate through the board to count the number of white and black disks
      for (int i = 0; i < s; i++){
           for (int j = 0; j < s; j++){
                if (b[i][j] == '0'){
-                    white_counter += 1;
+                    white_counter += 1; // add 1 point to player 1's point
                }
                else if (b[i][j] == '1'){
-                    black_counter += 1;
-               }
+                    black_counter += 1; // add 1 point to player 2's point
+               } 
           }
      }
      cout << "White Player Score: " << white_counter << endl;
      cout << "Black Player Score: " << black_counter << endl;
+     
      
      ofstream fout("leaderboard_temp.txt", ios::app);
      ifstream fin("leaderboard.txt");
@@ -358,80 +377,81 @@ void CountScore(char ** b, int s, string p1, string p2){
      string line;
      int counter = 0;
 
-     while (getline(fin, line))
+     while (getline(fin, line)) // we will go through the body of this loop if there is already existing record in the leaderboard
      {
           ofstream fout("leaderboard_temp.txt", ios::app);
           ifstream fin("leaderboard.txt");
           pname = "";
-
+          
+          // to read the player name in the leaderboard
           for (int i = 0; i < line.length(); i++)
           {
                if (line[i] != ' ')
-                    pname += line[i];
+                    pname += line[i]; 
                else if (line[i] == ' ')
                     break;
           }
 
-          if (white_counter > black_counter)
+          if (white_counter > black_counter)  // if player2 wins, we store the record of player2
           {
-               string currentrecord = line.substr(p1.length()+1, 2);
+               string currentrecord = line.substr(p1.length()+1, 2); // grasp the current record of the player
                int crecord = atoi(currentrecord.c_str());
-               int newrecord = (white_counter*100/(s*s));
+               int newrecord = (white_counter*100/(s*s)); // count the new record of the winning player
 
-               if (pname != p1)
+               if (pname != p1) // if the record in the leaderboard.txt belongs to a different person, we just copy the line into leaderboard_temp.txt
                {
                     fout << line << endl;
                     continue;
                }
 
-               else if (pname == p1)
+               else if (pname == p1) // if the record in the leaderboard.txt belongs to the winning player
                {
-                    if (crecord < newrecord)
+                    if (crecord < newrecord) // and he/she breaks the personal record
                     {
-                         line.replace(p1.length()+1, currentrecord.length(), to_string(newrecord));
-                         fout << line << endl;
-                         remove("leaderboard.txt");
+                         line.replace(p1.length()+1, currentrecord.length(), to_string(newrecord)); // replace the old record with the new one
+                         fout << line << endl; // copy the line (with new record) to leaderboard_temp.txt
+                         remove("leaderboard.txt"); 
                          ofstream fout("leaderboard.txt", ios::app);
                          ifstream fin("leaderboard_temp.txt");
-                         while (getline(fin, line))
+                         while (getline(fin, line)) // copy all lines in leaderboard_temp.txt to leaderboard.txt
                               fout << line << endl;
-                         remove("leaderboard_temp.txt");
+                         remove("leaderboard_temp.txt"); 
                          fout.close();
                          fin.close();
                     }
-                    counter = 1;
+                    counter = 1; // meaning that we store a record of a person whose name is already in the leaderboard before
                     break;
                }
           }
 
-          else if (white_counter < black_counter)
+          else if (white_counter < black_counter) // if player2 wins, we store the record of player2
           {
-               string currentrecord = line.substr(p2.length()+1, 2);
+               string currentrecord = line.substr(p2.length()+1, 2); // grasp the current record of the player
                int crecord = atoi(currentrecord.c_str());
-               int newrecord = (black_counter*100/(s*s));
+               int newrecord = (black_counter*100/(s*s)); // count the new record of the winning player
 
-               if (pname != p2)
+               if (pname != p2) // if the record in the leaderboard.txt belongs to a different person, we just copy the line into leaderboard_temp.txt
                {
                     fout << line << endl;
                     continue;
                }
 
-               else if (pname == p2)
+               else if (pname == p2) // if the record in the leaderboard.txt belongs to the winning player
                {
-                    if (crecord < newrecord)
+                    if (crecord < newrecord) // and he/she breaks the personal record
                     {
-                         line.replace(p2.length()+1, currentrecord.length(), to_string(newrecord));
-                         fout << line << endl;
-                         remove("leaderboard.txt");
+                         line.replace(p2.length()+1, currentrecord.length(), to_string(newrecord)); // replace the old record with the new one
+                         fout << line << endl; // copy the line (with new record) to leaderboard_temp.txt
+                         remove("leaderboard.txt"); 
                          ofstream fout("leaderboard.txt", ios::app);
                          ifstream fin("leaderboard_temp.txt");
-                         while (getline(fin, line))
+                         while (getline(fin, line)) // copy all lines in leaderboard_temp.txt to leaderboard.txt
                               fout << line << endl;
                          remove("leaderboard_temp.txt");
                          fout.close();
                          fin.close();
                     }
-                    counter = 1;
+                    counter = 1; // meaning that we store a record of a person whose name is already in the leaderboard before
                     break;
                }
           }
@@ -445,11 +465,11 @@ void CountScore(char ** b, int s, string p1, string p2){
      ifstream fin2("leaderboard.txt");
      ofstream fout2("leaderboard.txt", ios::app);
 
-     int count = 0;
+     int count = 0; 
      while (getline(fin2, line))
          count++;
 
-     if (count == 0)
+     if (count == 0) // if leaderboard.txt is still empty, write the header of the leaderboard
      {
          fout2 << "**************************************" << endl;
          fout2 << "PERSONAL RECORD OF THE WINNING PLAYERS" << endl;
@@ -458,8 +478,9 @@ void CountScore(char ** b, int s, string p1, string p2){
      }
      fin2.close();
      
-     if (counter == 0)
+     if (counter == 0) // if the winning player has not had a record in the leaderboard
      {
+          // store the name and the record of the winning player
           if (white_counter > black_counter)
           {
                fout2 << p1 << " ";
@@ -478,13 +499,15 @@ void CountScore(char ** b, int s, string p1, string p2){
 
      fout2.close();
      
-
+     // determining the winner (player with more disks win)
      if (white_counter > black_counter){
           cout << "White " << WHITE << " Player Wins" << endl;
      }
      else if (white_counter < black_counter){
           cout << "Black " << BLACK << " Player Wins" << endl;
      }
+     
+     // if it's a tie (player1 and player2 have the same number of disks), no record will be written to the leaderboard
      else{
           cout << "It's a tie !!" << endl;
      }
