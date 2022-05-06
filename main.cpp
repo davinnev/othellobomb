@@ -86,7 +86,7 @@ int main()
           {
                cout << "Player white " << WHITE << " turn, input block to fill: "; // prompt the user to fill a space on the board
                userinput = GetUserInput(board, bsize);
-               if (userinput == "quit" || userinput == "QUIT" || userinput = "Quit"){ // if the user want to quit the game
+               if (userinput == "quit" || userinput == "QUIT" || userinput == "Quit"){ // if the user want to quit the game
                     break;
                }
                
