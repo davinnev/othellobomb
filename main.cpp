@@ -3,6 +3,7 @@
 #include <ctime> // as seed in random function, to randomized bomb position
 #include <fstream> // input and output leaderboard file
 #include <string>
+#include <iomanip>
 #include "bomb1.h" // helps linking this file with bomb1.cpp
 #include "bomb2.h" // helps linking this file with bomb2.cpp
 using namespace std;
@@ -446,7 +447,7 @@ void CountScore(char ** b, int s, string p1, string p2){
                {
                     if (crecord < newrecord) // and he/she breaks the personal record
                     {
-                         line.replace(p1.length()+1, currentrecord.length(), to_string(newrecord)); // replace the old record with the new one
+                         line.replace(17, currentrecord.length(), to_string(newrecord)); // replace the old record with the new one
                          fout << line << endl; // copy the line (with new record) to leaderboard_temp.txt
                          remove("leaderboard.txt"); 
                          ofstream fout("leaderboard.txt", ios::app);
@@ -478,7 +479,7 @@ void CountScore(char ** b, int s, string p1, string p2){
                {
                     if (crecord < newrecord) // and he/she breaks the personal record
                     {
-                         line.replace(p2.length()+1, currentrecord.length(), to_string(newrecord)); // replace the old record with the new one
+                         line.replace(17, currentrecord.length(), to_string(newrecord)); // replace the old record with the new one
                          fout << line << endl; // copy the line (with new record) to leaderboard_temp.txt
                          remove("leaderboard.txt"); 
                          ofstream fout("leaderboard.txt", ios::app);
@@ -521,16 +522,20 @@ void CountScore(char ** b, int s, string p1, string p2){
           // store the name and the record of the winning player
           if (white_counter > black_counter)
           {
+               fout2 << fixed << left << setw(16);
                fout2 << p1 << " ";
                fout2 << (white_counter*100/(s*s)) << "% of board filled";
                fout2 << endl;
+               fout2.unsetf(ios_base::fixed);
           }
 
           else if (white_counter < black_counter)
           {
+               fout2 << fixed << left << setw(16);
                fout2 << p2 << " ";
                fout2 << (black_counter*100/(s*s)) << "% of board filled";
                fout2 << endl;
+               fout2.unsetf(ios_base::fixed);
           }
           remove("leaderboard_temp.txt");
      }
