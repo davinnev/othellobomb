@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-#include <time.h> // as seed in random function, to randomized bomb position
+#include <ctime> // as seed in random function, to randomized bomb position
 #include <fstream> // input and output leaderboard file
 #include <string>
 #include "bomb1.h" // helps linking this file with bomb1.cpp
@@ -111,7 +111,7 @@ int main()
           {
                cout << "Player black " << BLACK << " turn, input block to fill: "; // prompt the user to fill a space on the board
                userinput = GetUserInput(board, bsize);
-               if (userinput == "quit" || userinput == "QUIT"){ // if the user want to quit the game
+               if (userinput == "quit" || userinput == "QUIT" || userinput == "Quit"){ // if the user want to quit the game
                     break;
                }
                    
@@ -153,8 +153,7 @@ bool CountEmpty(char ** b, int s) // to determine whether the game has finished
 int get_row(string input){ 
      /*what it does: to get the integer representation of row 
      input: userinput
-     output: integer representation of row
-     (ex: A1 -> row = 0, B0 -> row = 1)*/ 
+     output: integer representation of row (ex: A1 -> row = 0, B0 -> row = 1)*/ 
      int row = (int) input[0] - 65;
      return row;
 }
@@ -162,8 +161,7 @@ int get_row(string input){
 int get_column(string input){
      /*what it does: to get the integer representation of column 
      input: userinput
-     output: integer representation of column
-     (ex: A1 -> col = 1, B0 -> col = 0)*/ 
+     output: integer representation of column (ex: A1 -> col = 1, B0 -> col = 0)*/ 
      int column = -1;
      if (input.length() == 3)
      {
@@ -179,9 +177,9 @@ int get_column(string input){
 
 void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs){
      /*what it does: generate random positions for the bomb and modify the board accordingly
-     input: board size(s), number of bombs (no_of_bombs)
-     output: board (b) will be modified with bombs in random postion*/ 
-     srand(time(0)); // use current time as seed in srand (to generate different numbers everytime program run)
+     input: board size(s), number of bombs desired(no_of_bombs)
+     output: board (b) will be modified with bombs in random postions*/ 
+     srand(time(NULL));; // use current time as seed in srand (to generate different numbers everytime program run)
      for (int i = 2; i < no_of_bombs+2; i++){
           int row = rand() % s;
           int column = rand() % s;
@@ -205,7 +203,7 @@ void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs){
 
 int GetBoardSize(){
      /*what it does: prompt user input which will determine how big will the baord be and returns it
-     input: an int from 6-10. User will be reprompted if input out of bounds
+     input: an int from 6 to 10. User will be reprompted if input out of bounds
      output: return the value of a correct board size*/ 
      int board_size;
      cin >> board_size;
@@ -218,7 +216,7 @@ int GetBoardSize(){
 
 string GetUserInput(char **b, int s){
      /*what it does: prompt user input complete with error handling
-     input: takes a string of 2 charaters, 1st one alphabet, 2md one number (eg. A1, B10, C5).
+     input: takes a string of position(eg. A1, B10, C5).
      output: a correct input for placing the disk*/ 
      bool correct = false;
      string input;
