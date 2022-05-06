@@ -12,11 +12,11 @@ Othello is a two-player strategy board game played on a square uncheckered board
 Rules:
 1. Players are allowed to determine the board size from 6x6 to 10x10 and must be an even number. The board shape is a square.
 2. Aside from board size, players are also able to determine the number of bombs. There are 3 types of bomb:
-      a. The Evil Bomb: Once a player decides to put the disk on the square containing this bomb, the bomb will clear out all disks located in the same 
-         column and row (e.g. if an evil bomb is located in (0, 4), all the disks on the first row and fifth column will be wiped out).
-      b. The Silly Bomb: Once a player decides to put the disk on the square containing this bomb, the bomb will reverse the disk color, applicable to all  
-         the disks that have been placed on the board.
-      c. The Nice Bomb: Once a player decides to put the disk on the square containing this bomb, the player is allowed to make another move.
+      a. Bomb 1/The Evil Bomb: Once a player decides to put the disk on the square containing this bomb, the bomb will clear out all disks located in the 
+         same column and row (e.g. if an evil bomb is located in (0, 4), all the disks on the first row and fifth column will be wiped out).
+      b. Bomb 2/The Silly Bomb: Once a player decides to put the disk on the square containing this bomb, the bomb will reverse the disk color, applicable 
+         to all the disks that have been placed on the board.
+      c. Bomb 3/The Nice Bomb: Once a player decides to put the disk on the square containing this bomb, the player is allowed to make another move.
 	       The bombs will be placed randomly and the number of three types of bomb might not be equal in a single round. The players are not allowed to know 
          the bombs’ location.
 3. The game will begin by putting 4 disks in the middle of the board (2 white on top left and bottom right, 2 black on top right and bottom left).
@@ -32,21 +32,35 @@ Features:
 2. Data structures for storing game status:  
 	We use 2D array for the board that will store the disk (denoted by either ◦ (unicode number: &#9702) or • (unicode number: &#8226)).
 3. Dynamic memory management:   
-	user can choose the number of tiles for the board, then we will make a new 2D array that will store the disks according to user preferences .
-4. File input/output (e.g., for loading/saving game status):  
-	- input: player move (row column).
-	- output: print the updated board.
-	- // to be fixed //
+	 User can choose the number of tiles for the board, then we will make a dynamic 2D array (using new) that will store the disks according to user  
+   preferences .
+4. File input/output (e.g., for saving personal record):  
+	The program uses fstream library to utilize fin and fout in order to store the leaderboard. Every player name is unique, and if he/she wins the game and 
+  beat his/her own personal record, the program will update the newest record in leaderboard.txt. If the name is not yet written in the leaderboard, the 
+  program will add it. The fout process is very useful to write a new record, whereas fin is very useful to compare the previous and latest record.
+  As the board size is uncertain, the program calculates how much of the board is filled by the winner's disk (in percentage).
 5. Program codes in multiple files:   
-	- The main function which consists of the game flow from the beginning to the end will be separated into one separate file.
-	- The mechanism and effect of every type of bomb will be stored in different files.
-	- // to be fixed //
+	- The main file (main.cpp) which consists of the game flow from the beginning to the end will be separated into one separate file.
+	- The mechanism and effect of Bomb1 (bomb1.cpp) and Bomb2 (bomb2.cpp) will be stored in different files.
+	- The main file and the bomb files are linked using header files (bomb1.h and bomb2.h).
 
 List of non-standard C++ Libraries:
 None
 
 Compilation and execution instructions:
 1. Clone this repo to your local computer
-2. Compile the program using: g++ -pedantic-errors -std=c++11 main.cpp bomb1.cpp bomb2.cpp -o othellobomb
-3. Run the program by typing ./othellobomb in your terminal or command prompt
-4. If you are prompted for board size, if means that the game have starts sucessfully
+2. Compile the program using Makefile on the terminal, by inserting commands:
+   $ make othellobomb
+      ...
+   $ ./othellobomb
+3. If you are prompted for board size, it means that the game have started successfully.
+
+Additional notes:
+1. Players
+- Player 1 is the same as the player with white disk
+- Player 2 is the same as the player with black disk
+2. Bombs
+- Bomb 1 is the same as The Evil Bomb
+- Bomb 2 is the same as The Silly Bomb
+- Bomb 3 is the same as The Nice Bomb
+3. Some commit comments were added not directly when the commits are done, hence maybe they are not explicitly shown. You can check it in the "Commits" section.
