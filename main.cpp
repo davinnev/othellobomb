@@ -137,8 +137,11 @@ int main()
      return 0;
 }
 
-bool CountEmpty(char ** b, int s) // to determine whether the game has finished
+bool CountEmpty(char ** b, int s) 
 {
+     // Input: Current board and board size
+     // Output: return true if there is still any space left to be filled, or false if all spaces have been filled
+     // What it does: to determine whether the game has finished
      for (int i = 0; i < s; i++)
      {
           for (int j = 0; j < s; j++)
@@ -251,8 +254,11 @@ string GetUserInput(char **b, int s){
      return input;
 }
 
-void InputBoard(char ** b, int s) // to fill the 2d array at the beginning of the game
+void InputBoard(char ** b, int s)
 {
+     // Input: board 2D array and board size
+     // Output: 2D array that stores the new board
+     // What it does: construct a new board when a game starts
     for (int i = 0; i < s; i++) // i = row index
     {
          for (int j = 0; j < s; j++) // j = column index
@@ -274,6 +280,9 @@ void InputBoard(char ** b, int s) // to fill the 2d array at the beginning of th
 
 void PrintBoard(char ** b, int s)
 {
+     // Input: board 2D array and board size
+     // Output: current board
+     // What it does: prints the current board
      cout << endl;
      cout << "  ";
      for (int i = 0; i < s; i++)
@@ -325,6 +334,9 @@ void PrintBoard(char ** b, int s)
 
 void ModifyBoard(char ** b, string input, int turn, int s)
 {
+     // Input: board 2D array, input of player, the variable "turn" to indicate whose turn it is, board size
+     // Output: updated board or bomb execution
+     // What it does: filled the board with player's input or check for Bomb 1 or Bomb 2 (and execute it if the player steps on the bomb)
      int row = get_row(input), column = get_column(input);
 
      if (b[row][column] == ' ') // find the position of the space filled by current player
@@ -350,6 +362,9 @@ void ModifyBoard(char ** b, string input, int turn, int s)
 
 void Bomb3(char ** b, string input, int &turn, int s)
 {
+    // Input: board 2D array, input of player, the variable "turn" to indicate whose turn it is (pass-by reference), board size
+    // Output: modified turn value (if the player steps on Bomb 3)
+    // What it does: check if the player steps on Bomb 3 and if yes, give the player another turn to play
     int row = get_row(input), column = get_column(input);
 
     if (b[row][column] == '4')
@@ -372,6 +387,10 @@ void Bomb3(char ** b, string input, int &turn, int s)
 }
 
 void CountScore(char ** b, int s, string p1, string p2){
+     // Input: board 2D array, board size, player 1's name, player 2's name
+     // Output: total points, winner, scoreboard file
+     // What it does: count points of both players, store a personal record to the leaderboard file (using fstream) 
+     // and determine the winner
      int white_counter = 0, black_counter = 0;
 
      // iterate through the board to count the number of white and black disks
