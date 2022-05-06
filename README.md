@@ -45,7 +45,7 @@ Features:
 List of non-standard C++ Libraries:
 None
 
-Compilation and execution instructions. Simply put, this serves like a "Quick start" of your game:
+Compilation and execution instructions:
 1. Clone this repo to your local computer
 2. Compile the program using: g++ -pedantic-errors -std=c++11 main.cpp bomb1.cpp bomb2.cpp -o othellobomb
 3. Run the program by typing ./othellobomb in your terminal or command prompt

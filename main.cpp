@@ -19,8 +19,8 @@ void PrintBoard(char ** b, int s); // to print the current board condition
 string GetUserInput(char **b, int s); // get user input complete with error handling
 int GetBoardSize(); // get user input of the size of board
 bool CountEmpty(char ** b, int s); // check if there is any empty block / no (check whether the game is finished)
-int get_row(string input); //to get the integer representation of row (ex: A1 -> row = 0, B0 -> row = 1)
-int get_column(string input); //to get the integer representation of column (ex: A1 -> col = 1, B0 -> col = 0)
+int get_row(string input); //to get the integer representation of row
+int get_column(string input); //to get the integer representation of column
 void ModifyBoard(char ** b, string input, int turn, int s); // modify the board according to user input
 void Bomb3(char ** b, string input, int &turn, int s); // Bomb 3 lets the current player go on another turn
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col); // to determine from which column until which column that the disk should be flipped
@@ -28,9 +28,9 @@ void flip_horizontal(char **b, int from_col, int until_col, int turn, string inp
 void flipable_vertical(char ** b, string input, int s, int turn, int * from_row, int * until_row); // to determine from which row until which row that the disk should be flipped
 void flip_vertical(char **b, int from_row, int until_row, int turn, string input); // to flip in vertical manner, given from which row until which row to be flipped
 void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col); // to determine from which column & row until which column & row that the disk should be flipped
-void flip_diagonal1(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (positive gradient)
+void flip_diagonal1(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (negative gradient)
 void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col); // to determine from which column & row until which column & row that the disk should be flipped
-void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (negative gradient)
+void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input); // to flip in a diagonal manner (positive gradient)
 void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col); // wraps up all above flipable and flip functions
 void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs); // determining bomb types and positions in the game
 void CountScore(char ** b, int s, string p1, string p2); //count the score of each player, decide winner, store in leaderboard
@@ -68,7 +68,7 @@ int main()
      
      PrintBoard(board, bsize);
 
-     GenerateRandomPositionForBomb(board, bsize, no_of_bombs);
+     GenerateRandomPositionForBomb(board, bsize, no_of_bombs); // generate bomb in random positions; no. of bombs have been determined by user
 
      string userinput = "";
      int turn = 0; // to determine which player's turn it is
@@ -86,13 +86,15 @@ int main()
           {
                cout << "Player white " << WHITE << " turn, input block to fill: "; // prompt the user to fill a space on the board
                userinput = GetUserInput(board, bsize);
-               if (userinput == "quit" || userinput == "QUIT"){ // if the user want to quit the game
+               if (userinput == "quit" || userinput == "QUIT" || userinput = "Quit"){ // if the user want to quit the game
                     break;
                }
                
                // convert the user input into the index of the block in the 2D array
-               from_row = get_row(userinput); until_row = get_row(userinput); 
-               from_col = get_column(userinput); until_col = get_column(userinput);
+               from_row = get_row(userinput); 
+               until_row = get_row(userinput); 
+               from_col = get_column(userinput); 
+               until_col = get_column(userinput);
 
                ModifyBoard(board, userinput, turn, bsize);
                FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
@@ -114,8 +116,10 @@ int main()
                }
                    
                // convert the user input into the index of the block in the 2D array
-               from_row = get_row(userinput); until_row = get_row(userinput); 
-               from_col = get_column(userinput); until_col = get_column(userinput);
+               from_row = get_row(userinput); 
+               until_row = get_row(userinput); 
+               from_col = get_column(userinput); 
+               until_col = get_column(userinput);
 
                ModifyBoard(board, userinput, turn, bsize);
                FlipBoard(board, userinput, bsize, turn, from_row, until_row, from_col, until_col);
@@ -146,12 +150,20 @@ bool CountEmpty(char ** b, int s) // to determine whether the game has finished
      return 0; // no empty space, the game has finished
 }
 
-int get_row(string input){
-     int row = (int) input[0] - 65; G
+int get_row(string input){ 
+     /*what it does: to get the integer representation of row 
+     input: userinput
+     output: integer representation of row
+     (ex: A1 -> row = 0, B0 -> row = 1)*/ 
+     int row = (int) input[0] - 65;
      return row;
 }
 
 int get_column(string input){
+     /*what it does: to get the integer representation of column 
+     input: userinput
+     output: integer representation of column
+     (ex: A1 -> col = 1, B0 -> col = 0)*/ 
      int column = -1;
      if (input.length() == 3)
      {
@@ -166,7 +178,10 @@ int get_column(string input){
 }
 
 void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs){
-     srand(time(0));
+     /*what it does: generate random positions for the bomb and modify the board accordingly
+     input: board size(s), number of bombs (no_of_bombs)
+     output: board (b) will be modified with bombs in random postion*/ 
+     srand(time(0)); // use current time as seed in srand (to generate different numbers everytime program run)
      for (int i = 2; i < no_of_bombs+2; i++){
           int row = rand() % s;
           int column = rand() % s;
@@ -189,6 +204,9 @@ void GenerateRandomPositionForBomb(char ** b, int s, int no_of_bombs){
 }
 
 int GetBoardSize(){
+     /*what it does: prompt user input which will determine how big will the baord be and returns it
+     input: an int from 6-10. User will be reprompted if input out of bounds
+     output: return the value of a correct board size*/ 
      int board_size;
      cin >> board_size;
      while (board_size < 6 || board_size > 10){
@@ -199,12 +217,15 @@ int GetBoardSize(){
 }
 
 string GetUserInput(char **b, int s){
+     /*what it does: prompt user input complete with error handling
+     input: takes a string of 2 charaters, 1st one alphabet, 2md one number (eg. A1, B10, C5).
+     output: a correct input for placing the disk*/ 
      bool correct = false;
      string input;
      while (correct == false){
           cin >> input; //keep prompting user input until correct input is given
           correct = true;
-          if (input == "quit"){
+          if (input == "quit" || input == "QUIT" || input == "Quit"){ // we will handle the quit input on main
                return input;
           }
           //if user input in lower case, make it to uppercase
@@ -514,11 +535,15 @@ void CountScore(char ** b, int s, string p1, string p2){
 }
 
 void flipable_horizontal(char ** b, string input, int s, int turn, int * from_col, int * until_col){
+     /*what it does: to determine from which column until which column that the disk should be flipped
+     input: user input(input), board size(s), player 0 or 1's turn(turn)
+     output: modify the value of from_col and until_col accordingly */ 
      int row = get_row(input), column = get_column(input);
      char my_turn = turn + 48;
+
      //from
      for (int i = column; i >= 0; i--){
-          if (b[row][i] != '0' && b[row][i] != '1' && i != column){
+          if (b[row][i] != '0' && b[row][i] != '1' && i != column){ 
                *from_col = column;
                break;
           }
@@ -543,6 +568,9 @@ void flipable_horizontal(char ** b, string input, int s, int turn, int * from_co
 }
 
 void flip_horizontal(char **b, int from_col, int until_col, int turn, string input){
+     /*what it does: to flip disks in horizontal manner
+     input: from what column(from_col) until what column(until_col) to be flipped
+     output: modify the board(b) if possible*/ 
      int row = get_row(input);
      for (int i = from_col + 1; i < until_col; i++){
           if (turn == 1){
@@ -555,6 +583,9 @@ void flip_horizontal(char **b, int from_col, int until_col, int turn, string inp
 }
 
 void flipable_vertical(char ** b, string input, int s, int turn, int * from_row, int * until_row){
+     /*what it does: to determine from which row until which row that the disk should be flipped
+     input: user input(input), board size(s), player 0 or 1's turn(turn)
+     output: modify the value of from_row and until_row accordingly */ 
      int column = get_column(input), row = get_row(input);
      char my_turn = turn + 48;
      
@@ -585,6 +616,9 @@ void flipable_vertical(char ** b, string input, int s, int turn, int * from_row,
 }
 
 void flip_vertical(char **b, int from_row, int until_row, int turn, string input){
+     /*what it does: to flip disks in vertical manner
+     input: from what row (from_row) until what row (until_row) to be flipped
+     output: modify the board(b) if possible*/ 
      int column = get_column(input);
      
      for (int i = from_row + 1; i < until_row; i++){
@@ -598,8 +632,12 @@ void flip_vertical(char **b, int from_row, int until_row, int turn, string input
 }
 
 void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col){
+     /*what it does: to determine from which row and column until which row and column that the disk should be flipped diagonally
+     input: user input(input), board size(s), player 0 or 1's turn(turn)
+     output: modify the value of from_row, from_col, until_row, and until_col accordingly */ 
      int origin_row = get_row(input), origin_column = get_column(input);
      char my_turn = turn + 48;
+
      //from
      int i = 1;
      while (origin_column - i >= 0 && origin_row - i >= 0){
@@ -634,6 +672,9 @@ void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row
 }
 
 void flip_diagonal1(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input){
+     /*what it does: to flip in a diagonal manner (negative gradient \)
+     input: from what row(from_row) and column(from_col), until what row(until_row) and column(until_col) to be flipped
+     output: modify the board(b) if possible*/ 
      int i = 0;
      while (from_row + i < until_row && from_col + i < until_col){
           if (turn == 1){
@@ -647,8 +688,12 @@ void flip_diagonal1(char **b, int from_row, int until_row, int from_col, int unt
 }
 
 void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row, int * until_row, int * from_col, int * until_col){
+     /*what it does: to determine from which row and column until which row and column that the disk should be flipped diagonally
+     input: iuser input(input), board size(s), player 0 or 1's turn(turn)
+     output: modify the value of from_row, from_col, until_row, and until_col accordingly */ 
      int origin_row = get_row(input), origin_column = get_column(input);
      char my_turn = turn + 48;
+
      //from
      int i = 1;
      while (origin_row + i < s && origin_column - i >= 0){
@@ -683,6 +728,9 @@ void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row
 }
 
 void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int until_col, int turn, string input){
+     /*what it does: to flip in a diagonal manner (positive gradient /)
+     input: from what row and column, until what row and column to be flipped
+     output: modify the board(b) if possible*/ 
      int i = 0;
      while (from_row - i > until_row && from_col + i < until_col){
           if (turn == 1){
@@ -696,6 +744,9 @@ void flip_diagonal2(char **b, int from_row, int until_row, int from_col, int unt
 }
 
 void FlipBoard(char ** board, string userinput, int bsize, int turn, int from_row, int until_row, int from_col, int until_col){
+     /*what it does: compile all flip and flipable functions into a function
+     input: -
+     output: - */ 
      flipable_horizontal(board, userinput, bsize, turn, &from_col, &until_col);
      flip_horizontal(board, from_col, until_col, turn, userinput);
      flipable_vertical(board, userinput, bsize, turn, &from_row, &until_row);
