@@ -586,7 +586,6 @@ void flipable_horizontal(char ** b, string input, int s, int turn, int * from_co
                break;
           } 
      }
-     
 }
 
 void flip_horizontal(char **b, int from_col, int until_col, int turn, string input){
@@ -634,7 +633,6 @@ void flipable_vertical(char ** b, string input, int s, int turn, int * from_row,
                break;
           } 
      }
-
 }
 
 void flip_vertical(char **b, int from_row, int until_row, int turn, string input){
@@ -659,6 +657,10 @@ void flipable_diagonal1(char ** b, string input, int s, int turn, int * from_row
      output: modify the value of from_row, from_col, until_row, and until_col accordingly */ 
      int origin_row = get_row(input), origin_column = get_column(input);
      char my_turn = turn + 48;
+     *from_row = origin_row;
+     *from_col = origin_column;
+     *until_row = origin_row;
+     *until_col = origin_column;
 
      //from
      int i = 1;
@@ -715,7 +717,10 @@ void flipable_diagonal2(char ** b, string input, int s, int turn, int * from_row
      output: modify the value of from_row, from_col, until_row, and until_col accordingly */ 
      int origin_row = get_row(input), origin_column = get_column(input);
      char my_turn = turn + 48;
-
+     *from_row = origin_row;
+     *from_col = origin_column;
+     *until_row = origin_row;
+     *until_col = origin_column;
      //from
      int i = 1;
      while (origin_row + i < s && origin_column - i >= 0){
