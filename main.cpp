@@ -61,10 +61,11 @@ int main()
      cin >> no_of_bombs; // assume no of bombs not more than bsize*bsize
      
      // fill players' name (needed for the leaderboard data)
+     // assume players' names are not more than 10 characters and every name is case sensitive
      string player1, player2;
-     cout << "Player 1 name (white): ";
+     cout << "Player 1 name (white) (max. 10 characters): ";
      cin >> player1;
-     cout << "Player 2 name (black): ";
+     cout << "Player 2 name (black) (max. 10 characters): ";
      cin >> player2;
      
      PrintBoard(board, bsize);
