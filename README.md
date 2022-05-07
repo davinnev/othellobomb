@@ -17,8 +17,8 @@ Rules:
       b. Bomb 2/The Silly Bomb: Once a player decides to put the disk on the square containing this bomb, the bomb will reverse the disk color, applicable 
          to all the disks that have been placed on the board.
       c. Bomb 3/The Nice Bomb: Once a player decides to put the disk on the square containing this bomb, the player is allowed to make another move.
-	       The bombs will be placed randomly and the number of three types of bomb might not be equal in a single round. The players are not allowed to know 
-         the bombs’ location.
+	 The bombs will be placed randomly and the number of three types of bomb might not be equal in a single round. The players are not allowed to 
+	 know the bombs’ location.
 3. The game will begin by putting 4 disks in the middle of the board (2 white on top left and bottom right, 2 black on top right and bottom left).
 4. The player with black disk will make the first move. If there is/are white disk(s) bounded by black disks on both sides, the player with black disk can 
    acquire the white disk(s) and make it/them black. The same applies for the player with white disk.
@@ -32,8 +32,8 @@ Features:
 2. Data structures for storing game status:  
 	We use 2D array for the board that will store the disk (denoted by either ◦ (unicode number: &#9702) or • (unicode number: &#8226)).
 3. Dynamic memory management:   
-	 User can choose the number of tiles for the board, then we will make a dynamic 2D array (using new) that will store the disks according to user  
-   preferences .
+	 User can choose the number of tiles for the board, then we will make a dynamic 2D array (using new) that will store the disks according to user 
+	 preferences.
 4. File input/output (e.g., for saving personal record):  
 	The program uses fstream library to utilize fin and fout in order to store the leaderboard. Every player name is unique, and if he/she wins the game and 
   beat his/her own personal record, the program will update the newest record in leaderboard.txt. If the name is not yet written in the leaderboard, the 
